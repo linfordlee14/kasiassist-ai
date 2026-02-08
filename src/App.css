@@ -1,0 +1,318 @@
+:root {
+  --primary-color: #2c5f2d; /* Forest green - kept as accent */
+  --primary-hover: #1e421f;
+  --secondary-color: #97bc62; /* Light green */
+  --accent-color: #ffb703; /* Yellow accent */
+  --background-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* Purple gradient */
+  --card-bg: #ffffff;
+  --white: #ffffff;
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+  --border-color: #e2e8f0;
+  --border-radius: 16px;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--background-gradient);
+  color: var(--text-main);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#root {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.App {
+  width: 100%;
+  max-width: 600px;
+  background: var(--card-bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+/* Responsive adjustments */
+@media (min-width: 768px) {
+  .App {
+    min-height: 85vh;
+    max-height: 90vh;
+    border-radius: 24px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .App {
+    max-width: 800px;
+  }
+}
+
+.view {
+  padding: 1.5rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  animation: fadeIn 0.3s ease-out;
+  height: 100%;
+}
+
+@media (min-width: 768px) {
+  .view {
+    padding: 2.5rem;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Landing Page */
+#landing-page {
+  justify-content: center;
+  text-align: center;
+}
+
+#landing-page header {
+  margin-bottom: 2rem;
+}
+
+#landing-page h1 {
+  color: var(--primary-color);
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+}
+
+#landing-page p {
+  color: var(--text-muted);
+  font-size: 1.2rem;
+}
+
+.features {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+}
+
+@media (min-width: 768px) {
+  .features {
+    grid-template-columns: 1fr 1fr;
+  }
+  .feature:last-child {
+    grid-column: span 2;
+  }
+}
+
+.feature {
+  background: #f1f5f9;
+  padding: 1.5rem;
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+  transition: var(--transition);
+}
+
+.feature:hover {
+  border-color: var(--secondary-color);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.feature h3 {
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+}
+
+/* Auth Page */
+.login-container {
+  text-align: center;
+  margin: auto 0;
+}
+
+.login-container h2 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  border: 2px solid var(--border-color);
+  border-radius: var(--border-radius);
+  font-size: 1.1rem;
+  outline: none;
+  transition: var(--transition);
+}
+
+input[type="text"]:focus {
+  border-color: var(--primary-color);
+}
+
+/* Main App */
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.mode-selector {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  overflow-x: auto;
+  padding: 6px;
+  background: #f1f5f9;
+  border-radius: 18px;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.mode-selector::-webkit-scrollbar {
+  display: none;
+}
+
+.mode-btn {
+  padding: 0.75rem 1.25rem;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  border-radius: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+.mode-btn.active {
+  background: var(--white);
+  color: var(--primary-color);
+  box-shadow: var(--shadow-md);
+}
+
+.app-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.chat-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-height: 0;
+}
+
+.output-area {
+  flex: 1;
+  background: #f8fafc;
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  overflow-y: auto;
+  border: 1px solid var(--border-color);
+}
+
+.ai-response h3 {
+  margin: 1.5rem 0 0.5rem 0;
+  color: var(--primary-color);
+}
+
+.ai-response p {
+  margin-bottom: 1rem;
+}
+
+.input-container {
+  padding-top: 1rem;
+}
+
+textarea {
+  width: 100%;
+  height: 120px;
+  padding: 1rem;
+  border: 2px solid var(--border-color);
+  border-radius: var(--border-radius);
+  resize: none;
+  font-size: 1rem;
+  font-family: inherit;
+  margin-bottom: 1rem;
+  outline: none;
+}
+
+textarea:focus {
+  border-color: var(--primary-color);
+}
+
+/* Buttons */
+.primary-btn {
+  background: var(--primary-color);
+  color: var(--white);
+  border: none;
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: 700;
+  width: 100%;
+  transition: var(--transition);
+}
+
+.primary-btn:hover {
+  background: var(--primary-hover);
+  box-shadow: var(--shadow-md);
+}
+
+.secondary-btn {
+  background: var(--white);
+  border: 1px solid var(--border-color);
+  padding: 0.6rem 1.2rem;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+.secondary-btn:hover {
+  background: #f1f5f9;
+}
+
+/* Loading Spinner */
+.loading-text {
+  color: var(--text-muted);
+  text-align: center;
+  margin-top: 2rem;
+}
+
+/* Responsive touch-friendly buttons for mobile */
+@media (max-width: 767px) {
+  .primary-btn, .mode-btn {
+    padding: 1.2rem;
+  }
+}
