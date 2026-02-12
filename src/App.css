@@ -289,6 +289,12 @@ textarea:focus {
   box-shadow: var(--shadow-md);
 }
 
+.primary-btn:disabled {
+  background: #cbd5e1;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
 .secondary-btn {
   background: var(--white);
   border: 1px solid var(--border-color);
@@ -492,6 +498,16 @@ input:checked + .slider:before {
   border-top: 4px solid #7c3aed;
   border-radius: 50%;
   animation: spin 1s linear infinite;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  gap: 1rem;
+  color: var(--text-muted);
 }
 
 @keyframes spin {

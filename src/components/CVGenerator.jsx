@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import jsPDF from 'jspdf';
 import { callGeminiAPI } from '../api/gemini';
 
@@ -15,6 +15,15 @@ const CVGenerator = () => {
   });
   const [isEnhancing, setIsEnhancing] = useState(false);
   const [enhanceWithAI, setEnhanceWithAI] = useState(true);
+  const [cooldownTime, setCooldownTime] = useState(0);
+  const COOLDOWN_SECONDS = 5;
+
+  useEffect(() => {
+    if (cooldownTime > 0) {
+      const timer = setTimeout(() => setCooldownTime(cooldownTime - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [cooldownTime]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -186,10 +195,16 @@ LANGUAGES:
   };
 
   const handleGeneratePDF = async () => {
+    if (cooldownTime > 0) {
+      alert('Please wait a few seconds before trying again.');
+      return;
+    }
+
     let cvData = formData;
     console.log('Enhance with AI:', enhanceWithAI);
 
     if (enhanceWithAI) {
+      setCooldownTime(COOLDOWN_SECONDS);
       setIsEnhancing(true);
       try {
         console.log('Calling AI enhancement...');
@@ -308,6 +323,7 @@ LANGUAGES:
               type="checkbox" 
               checked={enhanceWithAI} 
               onChange={(e) => setEnhanceWithAI(e.target.checked)} 
+              disabled={isEnhancing}
             />
             <span className="slider round"></span>
           </label>
@@ -319,9 +335,9 @@ LANGUAGES:
       <button 
         onClick={handleGeneratePDF}
         className="primary-btn generate-btn"
-        disabled={isEnhancing || !formData.fullName}
+        disabled={isEnhancing || !formData.fullName || cooldownTime > 0}
       >
-        {isEnhancing ? 'AI is polishing your CV...' : 'Generate CV PDF'}
+        {isEnhancing ? 'AI is polishing your CV...' : cooldownTime > 0 ? `Wait ${cooldownTime}s...` : 'Generate CV PDF'}
       </button>
     </div>
   );

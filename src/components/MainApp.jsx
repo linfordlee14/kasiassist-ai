@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ModeButton from './ModeButton';
 import CVGenerator from './CVGenerator';
 import { callGeminiAPI } from '../api/gemini';
@@ -36,10 +36,24 @@ const MainApp = ({ userName, onLogout }) => {
   const [userInput, setUserInput] = useState('');
   const [aiOutput, setAiOutput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [cooldownTime, setCooldownTime] = useState(0);
+  const COOLDOWN_SECONDS = 5;
+
+  useEffect(() => {
+    if (cooldownTime > 0) {
+      const timer = setTimeout(() => setCooldownTime(cooldownTime - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [cooldownTime]);
 
   const handleGenerate = async () => {
+    if (cooldownTime > 0) {
+      alert('Please wait a few seconds before trying again.');
+      return;
+    }
     if (!userInput.trim() || isLoading) return;
 
+    setCooldownTime(COOLDOWN_SECONDS);
     setIsLoading(true);
     setAiOutput('');
 
@@ -111,7 +125,10 @@ const MainApp = ({ userName, onLogout }) => {
           <div className="chat-container">
             <div className="output-area">
               {isLoading ? (
-                <p className="loading-text">Generating response, please wait...</p>
+                <div className="loading-container">
+                  <div className="spinner"></div>
+                  <p>Generating your response...</p>
+                </div>
               ) : aiOutput ? (
                 <div className="ai-response">{formatResponse(aiOutput)}</div>
               ) : (
@@ -130,13 +147,14 @@ const MainApp = ({ userName, onLogout }) => {
                 value={userInput}
                 onChange={(e) => setUserInput(e.target.value)}
                 placeholder="Type your details or paste text here (e.g., your job history or a business idea)..."
+                disabled={isLoading}
               />
               <button 
                 onClick={handleGenerate} 
                 className="primary-btn"
-                disabled={isLoading || !userInput.trim()}
+                disabled={isLoading || !userInput.trim() || cooldownTime > 0}
               >
-                {isLoading ? 'Thinking...' : 'Ask AI Assistant'}
+                {isLoading ? 'Thinking...' : cooldownTime > 0 ? `Wait ${cooldownTime}s...` : 'Ask AI Assistant'}
               </button>
             </div>
           </div>

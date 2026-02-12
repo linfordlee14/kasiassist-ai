@@ -10,7 +10,41 @@
  * This file lives on the server (Vercel) to keep our API key hidden from the browser.
  */
 
+const rateLimit = new Map();
+const MAX_REQUESTS_PER_MINUTE = 10;
+const WINDOW_MS = 60000; // 1 minute
+
 export default async function handler(req, res) {
+    // Get client IP
+    const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+
+    // Check rate limit
+    const now = Date.now();
+    const userRequests = rateLimit.get(ip) || [];
+    const recentRequests = userRequests.filter(time => now - time < WINDOW_MS);
+
+    if (recentRequests.length >= MAX_REQUESTS_PER_MINUTE) {
+        return res.status(429).json({
+            error: 'Too many requests. Please wait a minute and try again.'
+        });
+    }
+
+    // Add current request
+    recentRequests.push(now);
+    rateLimit.set(ip, recentRequests);
+
+    // Clean old entries periodically
+    if (Math.random() < 0.1) { // 10% chance
+        for (const [key, times] of rateLimit.entries()) {
+            const valid = times.filter(time => now - time < WINDOW_MS);
+            if (valid.length === 0) {
+                rateLimit.delete(key);
+            } else {
+                rateLimit.set(key, valid);
+            }
+        }
+    }
+
     // Only allow POST requests
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method not allowed. Use POST.' });
