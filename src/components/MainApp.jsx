@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import ModeButton from './ModeButton';
+import CVGenerator from './CVGenerator';
 import { callGeminiAPI } from '../api/gemini';
 
 const MODES = {
@@ -17,6 +18,11 @@ const MODES = {
     title: 'Opportunity Explainer',
     desc: 'Simplifying complex job descriptions and grants.',
     context: 'You are an expert at simplifying complex job ads or grant requirements. Break down jargon into "plain English". Explain: 1. What is this? 2. What do I need? 3. How do I apply? Structure: Use headings (###) and bullet points (-) for clarity.'
+  },
+  cvGenerator: {
+    title: 'CV Generator',
+    desc: 'Fill in your details to generate a professional PDF CV.',
+    context: ''
   }
 };
 
@@ -99,38 +105,42 @@ const MainApp = ({ userName, onLogout }) => {
           <p>{MODES[currentMode].desc}</p>
         </div>
 
-        <div className="chat-container">
-          <div className="output-area">
-            {isLoading ? (
-              <p className="loading-text">Generating response, please wait...</p>
-            ) : aiOutput ? (
-              <div className="ai-response">{formatResponse(aiOutput)}</div>
-            ) : (
-              <p className="placeholder-text">AI response will appear here...</p>
-            )}
-          </div>
-          
-          {aiOutput && !isLoading && (
-            <div className="action-buttons">
-              <button onClick={copyToClipboard} className="secondary-btn">Copy to Clipboard</button>
+        {currentMode === 'cvGenerator' ? (
+          <CVGenerator />
+        ) : (
+          <div className="chat-container">
+            <div className="output-area">
+              {isLoading ? (
+                <p className="loading-text">Generating response, please wait...</p>
+              ) : aiOutput ? (
+                <div className="ai-response">{formatResponse(aiOutput)}</div>
+              ) : (
+                <p className="placeholder-text">AI response will appear here...</p>
+              )}
             </div>
-          )}
+            
+            {aiOutput && !isLoading && (
+              <div className="action-buttons">
+                <button onClick={copyToClipboard} className="secondary-btn">Copy to Clipboard</button>
+              </div>
+            )}
 
-          <div className="input-container">
-            <textarea 
-              value={userInput}
-              onChange={(e) => setUserInput(e.target.value)}
-              placeholder="Type your details or paste text here (e.g., your job history or a business idea)..."
-            />
-            <button 
-              onClick={handleGenerate} 
-              className="primary-btn"
-              disabled={isLoading || !userInput.trim()}
-            >
-              {isLoading ? 'Thinking...' : 'Ask AI Assistant'}
-            </button>
+            <div className="input-container">
+              <textarea 
+                value={userInput}
+                onChange={(e) => setUserInput(e.target.value)}
+                placeholder="Type your details or paste text here (e.g., your job history or a business idea)..."
+              />
+              <button 
+                onClick={handleGenerate} 
+                className="primary-btn"
+                disabled={isLoading || !userInput.trim()}
+              >
+                {isLoading ? 'Thinking...' : 'Ask AI Assistant'}
+              </button>
+            </div>
           </div>
-        </div>
+        )}
       </main>
     </section>
   );
